@@ -57,6 +57,8 @@ RUN apt-get update && \
       ros-$ROS_DISTRO-rmw-fastrtps-cpp \
       ros-$ROS_DISTRO-rmw-connextdds \
       ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+      ros-$ROS_DISTRO-rmw-cyclonedds-cpp\ 
+      ros-$ROS_DISTRO-rosidl-generator-dds-idl \ 
     && pip3 install --break-system-packages \
       fastcov \
       git+https://github.com/ruffsl/colcon-cache.git@a937541bfc496c7a267db7ee9d6cceca61e470ca \
@@ -165,6 +167,11 @@ FROM dever AS visualizer
 
 ENV ROOT_SRV /srv
 RUN mkdir -p $ROOT_SRV
+
+# Cheange the ROS2 RMW to CycloneDDS as instructed by Unitree
+RUN cd / && git clone https://github.com/unitreerobotics/unitree_ros2 && cd /unitree_ros2/cyclonedds_ws/src && \
+git clone https://github.com/ros2/rmw_cyclonedds -b rolling && git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x &&\
+cd .. && colcon build --packages-select cyclonedds && source /opt/ros/rolling/setup.bash && colcon build
 
 # install demo dependencies
 RUN apt-get update && apt-get install -y \
