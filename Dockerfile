@@ -91,7 +91,8 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     colcon build \
       --symlink-install \
       --mixin $UNDERLAY_MIXINS \
-      --event-handlers console_direct+
+      --event-handlers console_direct+ \
+      --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 # install overlay dependencies
 ARG OVERLAY_WS
@@ -119,7 +120,8 @@ RUN . $UNDERLAY_WS/install/setup.sh && \
     colcon cache lock && \
     colcon build \
       --symlink-install \
-      --mixin $OVERLAY_MIXINS
+      --mixin $OVERLAY_MIXINS \
+      --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 # source overlay from entrypoint
 RUN sed --in-place \
